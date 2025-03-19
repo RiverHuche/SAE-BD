@@ -279,6 +279,14 @@ select YEAR(datecom) as annee, max(qte*prixvente) as maximum, min(qte*prixvente)
     group by annee
     order by annee;
 
+
+SELECT annee, MAX(CA) AS maximum, MIN(CA) AS minimum, AVG(CA) AS moyenne
+FROM (
+ SELECT idcli, YEAR(datecom) AS annee, SUM(qte * prixvente) AS CA
+ FROM COMMANDE NATURAL JOIN DETAILCOMMANDE
+ GROUP BY annee, idcli) AS ChiffreAffClient
+GROUP BY annee;
+
 -- +-----------------------+--
 -- * Question 127572 : 2pts --
 -- +-----------------------+--
