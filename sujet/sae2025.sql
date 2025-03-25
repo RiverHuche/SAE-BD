@@ -301,6 +301,28 @@ GROUP BY annee;
 -- | etc...
 -- = Reponse question 127572.
 
+select annee, nomauteur, total FROM 
+    (SELECT YEAR(datecom) as annee, nomauteur, sum(qte) as total
+        FROM COMMANDE NATURAL JOIN DETAILCOMMANDE NATURAL JOIN LIVRE NATURAL JOIN ECRIRE NATURAL JOIN AUTEUR 
+        where YEAR(datecom) < 2025
+        group by annee,nomauteu)
+WHERE total in (
+    SELECT MAX(total)
+    FROM (
+        SELECT YEAR(datecom), nomauteur, SUM(qte)
+        FROM COMMANDE 
+        NATURAL JOIN DETAILCOMMANDE 
+        NATURAL JOIN LIVRE 
+        NATURAL JOIN ECRIRE 
+        NATURAL JOIN AUTEUR
+        WHERE YEAR(datecom) < 2025
+        GROUP BY YEAR(datecom), nomauteur
+    )
+    WHERE annee = YEAR(datecom)
+)
+ORDER BY annee;
+
+
 
 -- +-----------------------+--
 -- * Question 127574 : 2pts --
